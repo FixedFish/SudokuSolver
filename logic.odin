@@ -1,21 +1,47 @@
 package main
 
+import "core:fmt"
 import "core:math"
 
-GRID_SIZE :: 4
-BOX_SIZE :: 2
+GRID_SIZE: u8 : 4
+BOX_SIZE: u8 : 2
 
 grid: [GRID_SIZE][GRID_SIZE]u8
 
+try_to_put_num :: proc() {
+	row, col: u8
+	found: bool
+	row, col, found = find_empty_cell()
+	fmt.println("found: ", found)
+	if found {
+		for i: u8 = 1; i <= 4; i += 1 {
+			fmt.println("num: ", i)
+			if is_valid_pos(row, col, i) {
+				grid[row][col] = i
+				fmt.println(grid)
+				try_to_put_num()
+			}
+		}
+	} else {
+		fmt.println("Not found or already solven")
+	}
+}
+
 
 /* Helper functions */
+find_empty_cell :: proc() -> (row, col: u8, found: bool) {
+	for r in 0 ..< GRID_SIZE {
+		for c in 0 ..< GRID_SIZE {
+			if grid[r][c] == 0 {
+				return r, c, true
+			}
+		}
+	}
+	return 0, 0, false
+}
+
 is_valid_pos :: proc(row, col, num: u8) -> bool {
-	return(
-		is_valid_row(row, num) &&
-		is_valid_col(col, num) &&
-		is_valid_box(row, col, num) &&
-		is_empty_pos(row, col) \
-	)
+	return is_valid_row(row, num) && is_valid_col(col, num) && is_valid_box(row, col, num)
 }
 
 is_valid_row :: proc(row, num: u8) -> bool {
@@ -48,10 +74,6 @@ is_valid_box :: proc(row, col, num: u8) -> bool {
 		}
 	}
 	return true
-}
-
-is_empty_pos :: proc(row, col: u8) -> bool {
-	return !(grid[row][col] == 0)
 }
 
 load_puzzle :: proc() {
