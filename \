@@ -1,0 +1,47 @@
+package main
+
+import "core:fmt"
+
+row :: 4
+column :: 4
+
+grid: [row][column]u8
+
+init_grid :: proc() {
+	for y in 0 ..< row {
+		for x in 0 ..< column {
+			grid[y][x] = 0
+		}
+	}
+}
+
+is_valid_num :: proc(num: u8, row, col: u8) -> bool {
+	test_grid := grid
+	test_grid[row][col] = num
+	for y in 0 ..< 2 {
+		for x in 0 ..< 2 {
+			if test_grid[y][x] == grid[row][col] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+stuff_init :: proc() {
+	grid[0][1] = 2
+	grid[0][2] = 4
+	grid[1][0] = 1
+	grid[1][3] = 3
+	grid[2][0] = 4
+	grid[2][3] = 2
+	grid[3][1] = 1
+	grid[3][2] = 3
+}
+
+main :: proc() {
+	init_grid()
+	stuff_init()
+	fmt.print(is_valid_num(3, 0, 0))
+	fmt.println(grid)
+}
