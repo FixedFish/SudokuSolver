@@ -1,32 +1,26 @@
 package main
 
-import "core:fmt"
-import "core:math"
-
-GRID_SIZE: u8 : 4
-BOX_SIZE: u8 : 2
+GRID_SIZE: u8 : 9
+BOX_SIZE: u8 : 3
 
 grid: [GRID_SIZE][GRID_SIZE]u8
 
-try_to_put_num :: proc() {
-	row, col: u8
-	found: bool
-	row, col, found = find_empty_cell()
-	fmt.println("found: ", found)
-	if found {
-		for i: u8 = 1; i <= 4; i += 1 {
-			fmt.println("num: ", i)
-			if is_valid_pos(row, col, i) {
-				grid[row][col] = i
-				fmt.println(grid)
-				try_to_put_num()
+solve :: proc() -> bool {
+	row, col, found := find_empty_cell()
+	if !found {return true}
+
+	for num: u8 = 1; num <= GRID_SIZE; num += 1 {
+		if is_valid_pos(row, col, num) {
+			grid[row][col] = num
+			if solve() {
+				return true
+			} else {
+				grid[row][col] = 0
 			}
 		}
-	} else {
-		fmt.println("Not found or already solven")
 	}
+	return false
 }
-
 
 /* Helper functions */
 find_empty_cell :: proc() -> (row, col: u8, found: bool) {
@@ -76,13 +70,14 @@ is_valid_box :: proc(row, col, num: u8) -> bool {
 	return true
 }
 
-load_puzzle :: proc() {
-	grid[0][1] = 2
+/* load_puzzle :: proc() {
+	grid[0][1] = 0
 	grid[0][2] = 4
 	grid[1][0] = 1
 	grid[1][3] = 3
-	grid[2][0] = 4
+	grid[2][0] = 0
 	grid[2][3] = 2
 	grid[3][1] = 1
-	grid[3][2] = 3
+	grid[3][2] = 0
 }
+*/
